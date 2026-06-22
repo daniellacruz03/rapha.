@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>rapha.</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Satisfy&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <div class="logo logo-desktop">rapha.</div>
+      <div class="header-top-row">
+        <div class="logo logo-mobile">rapha.</div>
+        <button class="cart-button cart-mobile">
+          <span>Carrito</span>
+          <span class="cart-count">0</span>
+        </button>
+      </div>
+      <div class="search-container">
+        <input type="text" class="search-input" id="search-input" placeholder="Buscar productos...">
+        <button class="search-button" id="search-button">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.35-4.35"></path>
+          </svg>
+        </button>
+      </div>
+      <button class="goal-calculator-btn" id="goal-calculator-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path>
+        </svg>
+        <span>Calculadora de Objetivos</span>
+      </button>
+      <nav class="nav-tabs">
+        <button class="nav-tab active" data-category="supplements">Suplementos</button>
+        <button class="nav-tab" data-category="watches">Relojes</button>
+        <button class="nav-tab" data-category="sportswear">Ropa Deportiva</button>
+      </nav>
+      <button class="cart-button cart-desktop">
+        <span>Carrito</span>
+        <span class="cart-count">0</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main">
+    <div class="container">
+      <h1 id="category-title">Suplementos</h1>
+      <div class="products-grid" id="products-grid">
+        <!-- Products will be rendered here -->
+      </div>
+    </div>
+  </main>
+
+  <!-- Cart Sidebar -->
+  <div class="cart-overlay" id="cart-overlay"></div>
+  <aside class="cart-sidebar" id="cart-sidebar">
+    <div class="cart-header">
+      <h2 class="cart-title">Tu Carrito</h2>
+      <button class="cart-close" id="cart-close">&times;</button>
+    </div>
+    <div class="cart-items" id="cart-items">
+      <!-- Cart items will be rendered here -->
+    </div>
+    <div class="cart-footer">
+      <div class="cart-total">
+        <span>Total</span>
+        <span id="cart-total">$0.00</span>
+      </div>
+      <button class="cart-checkout-btn">Proceder al Pago</button>
+    </div>
+  </aside>
+
+  <!-- Goal Calculator Modal -->
+  <div class="calculator-overlay" id="calculator-overlay"></div>
+  <div class="calculator-modal" id="calculator-modal">
+    <div class="calculator-header">
+      <h2 class="calculator-title">Calculadora de Objetivos</h2>
+      <button class="calculator-close" id="calculator-close">&times;</button>
+    </div>
+    <div class="calculator-content" id="calculator-content">
+      <!-- Calculator steps will be rendered here -->
+    </div>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
