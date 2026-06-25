@@ -193,6 +193,31 @@ function renderProducts(category, searchTerm = '') {
   
   // Add event listeners for add to cart buttons
   setupAddToCartListeners();
+
+  // Preload adjacent images to prevent loading delays on navigation
+  preloadAdjacentImages(products, currentProductIndex);
+}
+
+// ===== PRELOAD ADJACENT IMAGES =====
+function preloadAdjacentImages(products, currentIndex) {
+  const indexesToPreload = [
+    currentIndex + 1 < products.length ? currentIndex + 1 : 0,
+    currentIndex - 1 >= 0 ? currentIndex - 1 : products.length - 1
+  ];
+
+  indexesToPreload.forEach(index => {
+    const p = products[index];
+    if (!p) return;
+    
+    if (p.colorImages && p.colorImages.length > 0) {
+      p.colorImages.forEach(cImg => {
+        if (cImg.images[0]) new Image().src = cImg.images[0];
+        if (cImg.images[1]) new Image().src = cImg.images[1];
+      });
+    } else if (p.image) {
+      new Image().src = p.image;
+    }
+  });
 }
 
 // ===== CREATE PRODUCT CARD =====
@@ -220,8 +245,8 @@ function createProductCard(product, category) {
       
       carouselImages += `
         <div class="carousel-slide ${isActive}" data-color-index="${index}">
-          <img src="${img1}" class="product-image carousel-base">
-          <img src="${img2}" class="product-image carousel-hover">
+          <img src="${img1}" class="product-image carousel-base" decoding="async" fetchpriority="high">
+          <img src="${img2}" class="product-image carousel-hover" decoding="async" fetchpriority="low">
         </div>
       `;
     });
@@ -250,7 +275,7 @@ function createProductCard(product, category) {
     }
   } else {
     imageHtml = product.image
-      ? `<div class="image-wrapper"><img src="${product.image}" alt="${product.name}" class="product-image"></div>`
+      ? `<div class="image-wrapper"><img src="${product.image}" alt="${product.name}" class="product-image" decoding="async" fetchpriority="high"></div>`
       : `<div class="image-placeholder"></div>`;
   }
 
