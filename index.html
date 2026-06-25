@@ -3,13 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>rapha.</title>
+  <title>rapha. | Suplementos, Zapatos y Ropa Deportiva</title>
+  
+  <!-- SEO & Social Media Meta Tags -->
+  <meta name="description" content="Descubre en rapha. la mejor selección premium de suplementos, zapatos y ropa deportiva de alta calidad.">
+  <meta name="keywords" content="rapha, suplementos, zapatos, ropa deportiva, fitness, venezuela">
+  <meta name="theme-color" content="#ffffff">
+  <meta property="og:title" content="rapha. | Sports & Supplements">
+  <meta property="og:description" content="La mejor selección de suplementos, calzado y ropa deportiva premium.">
+  <meta property="og:image" content="iconopag.png">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="iconopag.png">
+  <link rel="apple-touch-icon" href="iconopag.png">
+
+  <!-- Styles & Fonts -->
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Satisfy&display=swap" rel="stylesheet">
 </head>
 <body>
+  <!-- Aether Flow Canvas Background -->
+  <canvas id="aether-canvas"></canvas>
+  
   <!-- Header -->
   <header class="header">
     <div class="header-content">
@@ -37,8 +54,8 @@
         <span>Calculadora de Objetivos</span>
       </button>
       <nav class="nav-tabs">
-        <button class="nav-tab active" data-category="supplements">Suplementos</button>
-        <button class="nav-tab" data-category="watches">Relojes</button>
+        <button class="nav-tab" data-category="supplements">Suplementos</button>
+        <button class="nav-tab active" data-category="shoes">Zapatos</button>
         <button class="nav-tab" data-category="sportswear">Ropa Deportiva</button>
       </nav>
       <button class="cart-button cart-desktop">
@@ -51,9 +68,16 @@
   <!-- Main Content -->
   <main class="main">
     <div class="container">
-      <h1 id="category-title">Suplementos</h1>
-      <div class="products-grid" id="products-grid">
-        <!-- Products will be rendered here -->
+      <div class="carousel-container">
+        <button class="carousel-nav-btn prev-btn" id="carousel-prev">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+        </button>
+        <div class="products-carousel" id="products-grid">
+          <!-- Products will be rendered here -->
+        </div>
+        <button class="carousel-nav-btn next-btn" id="carousel-next">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
       </div>
     </div>
   </main>

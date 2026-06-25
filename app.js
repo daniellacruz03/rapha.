@@ -1,5 +1,6 @@
 // ===== STATE MANAGEMENT =====
-let currentCategory = 'supplements';
+let currentCategory = 'shoes';
+let currentProductIndex = 0;
 let cart = [];
 let selectedVariants = {};
 let calculatorStep = 0;
@@ -15,7 +16,7 @@ let calculatorData = {
 // ===== CATEGORY TITLES =====
 const categoryTitles = {
   supplements: 'Suplementos',
-  watches: 'Relojes',
+  shoes: 'Zapatos',
   sportswear: 'Ropa Deportiva'
 };
 
@@ -37,6 +38,8 @@ const calculatorOverlay = document.getElementById('calculator-overlay');
 const calculatorModal = document.getElementById('calculator-modal');
 const calculatorClose = document.getElementById('calculator-close');
 const calculatorContent = document.getElementById('calculator-content');
+const carouselPrev = document.getElementById('carousel-prev');
+const carouselNext = document.getElementById('carousel-next');
 
 // ===== INITIALIZE =====
 document.addEventListener('DOMContentLoaded', () => {
@@ -87,11 +90,39 @@ function setupEventListeners() {
   if (calculatorOverlay) {
     calculatorOverlay.addEventListener('click', closeCalculator);
   }
+
+  // Carousel Navigation
+  if (carouselPrev) {
+    carouselPrev.addEventListener('click', () => {
+      if (currentProductIndex > 0) {
+        currentProductIndex--;
+        renderProducts(currentCategory, searchInput ? searchInput.value.trim() : '');
+      }
+    });
+  }
+  if (carouselNext) {
+    carouselNext.addEventListener('click', () => {
+      let products = productsData[currentCategory];
+      const searchTerm = searchInput ? searchInput.value.trim() : '';
+      if (searchTerm) {
+        const term = searchTerm.toLowerCase();
+        products = products.filter(product =>
+          product.name.toLowerCase().includes(term) ||
+          product.description.toLowerCase().includes(term)
+        );
+      }
+      if (currentProductIndex < products.length - 1) {
+        currentProductIndex++;
+        renderProducts(currentCategory, searchTerm);
+      }
+    });
+  }
 }
 
 // ===== CATEGORY SWITCHING =====
 function switchCategory(category) {
   currentCategory = category;
+  currentProductIndex = 0;
   
   // Update active tab
   navTabs.forEach(tab => {
@@ -102,7 +133,9 @@ function switchCategory(category) {
   });
 
   // Update title
-  categoryTitle.textContent = categoryTitles[category];
+  if (categoryTitle) {
+    categoryTitle.textContent = categoryTitles[category];
+  }
 
   // Clear search input
   searchInput.value = '';
@@ -113,6 +146,7 @@ function switchCategory(category) {
 
 // ===== SEARCH FUNCTIONALITY =====
 function handleSearch() {
+  currentProductIndex = 0;
   const searchTerm = searchInput.value.trim();
   renderProducts(currentCategory, searchTerm);
 }
@@ -136,10 +170,20 @@ function renderProducts(category, searchTerm = '') {
         <h3>${searchTerm ? 'No se encontraron productos' : 'No hay productos disponibles'}</h3>
       </div>
     `;
+    if (carouselPrev) carouselPrev.disabled = true;
+    if (carouselNext) carouselNext.disabled = true;
     return;
   }
 
-  productsGrid.innerHTML = products.map(product => createProductCard(product, category)).join('');
+  // Render current product
+  if (currentProductIndex >= products.length) currentProductIndex = 0;
+  const product = products[currentProductIndex];
+  
+  productsGrid.innerHTML = createProductCard(product, category);
+
+  // Update arrow states
+  if (carouselPrev) carouselPrev.disabled = currentProductIndex === 0;
+  if (carouselNext) carouselNext.disabled = currentProductIndex === products.length - 1;
   
   // Add event listeners for variant selection
   setupVariantListeners();
@@ -156,18 +200,77 @@ function createProductCard(product, category) {
   const variantSelectors = createVariantSelectors(product, category);
   const accordion = createAccordion(product);
 
+  const currency = product.currency || 'BCV';
+  const priceLabel = currency === 'DIVISAS' ? `$${product.price} USD` : `${product.price} BCV`;
+  const currencyBadge = currency === 'DIVISAS'
+    ? `<span class="currency-badge divisas">DIVISAS</span>`
+    : `<span class="currency-badge bcv">BCV</span>`;
+
+  let imageHtml = '';
+  let colorThumbsHtml = '';
+  
+  if (product.colorImages && product.colorImages.length > 0) {
+    const images = product.colorImages;
+    let carouselImages = '';
+    
+    images.forEach((cImg, index) => {
+      const img1 = cImg.images[0];
+      const img2 = cImg.images[1] || img1;
+      const isActive = index === 0 ? 'active' : '';
+      
+      carouselImages += `
+        <div class="carousel-slide ${isActive}" data-color-index="${index}">
+          <img src="${img1}" class="product-image carousel-base">
+          <img src="${img2}" class="product-image carousel-hover">
+        </div>
+      `;
+    });
+
+    imageHtml = `
+      <div class="image-wrapper carousel-wrapper" onmouseenter="this.classList.add('hovering')" onmouseleave="this.classList.remove('hovering')">
+        ${carouselImages}
+      </div>
+    `;
+    
+    colorThumbsHtml = `
+      <div class="product-colors-thumbs">
+        ${images.map((cImg) => `
+          <div 
+            class="color-thumb" 
+            style="background-color: ${cImg.color}; cursor: default;" 
+            title="${cImg.name}"
+          ></div>
+        `).join('')}
+      </div>
+    `;
+    
+    if (product.variants && product.variants.colors) {
+      const { colors, ...restVariants } = product.variants;
+      product.variants = restVariants;
+    }
+  } else {
+    imageHtml = product.image
+      ? `<div class="image-wrapper"><img src="${product.image}" alt="${product.name}" class="product-image"></div>`
+      : `<div class="image-placeholder"></div>`;
+  }
+
   return `
-    <article class="product-card" data-product-id="${product.id}">
-      <div class="image-placeholder"></div>
+    <article class="product-card" data-product-id="${product.id}" data-category="${category}">
+      ${imageHtml}
+      ${colorThumbsHtml}
       <div class="product-info">
-        <h3 class="product-name">${product.name}</h3>
-        <p class="product-description">${product.description}</p>
-        <div class="product-price">$${product.price.toFixed(2)}</div>
-        ${variantSelectors}
-        <button class="add-to-cart-btn" data-product-id="${product.id}" disabled>
-          Añadir al Carrito
+        <h3 class="product-name" style="font-size: 1.75rem; margin-bottom: 0.25rem;">${product.name}</h3>
+        <div class="product-price" style="justify-content: center; margin-bottom: 1rem; font-weight: 500;">
+          ${priceLabel}
+        </div>
+        <button class="add-to-cart-btn" data-product-id="${product.id}" style="max-width: 250px; margin: 0 auto;">
+          <span>Añadir al Carrito</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <path d="M16 10a4 4 0 0 1-8 0"></path>
+          </svg>
         </button>
-        ${accordion}
       </div>
     </article>
   `;
@@ -244,6 +347,23 @@ function setupVariantListeners() {
   });
 }
 
+// ===== HANDLE COLOR THUMB HOVER =====
+window.handleColorThumbHover = function(button, productId, index) {
+  const card = document.querySelector(`.product-card[data-product-id="${productId}"]`);
+  if (!card) return;
+  
+  card.querySelectorAll('.color-thumb').forEach(btn => btn.classList.remove('active'));
+  button.classList.add('active');
+  
+  card.querySelectorAll('.carousel-slide').forEach((slide, i) => {
+    if (i === index) {
+      slide.classList.add('active');
+    } else {
+      slide.classList.remove('active');
+    }
+  });
+};
+
 // ===== UPDATE ADD TO CART BUTTON =====
 function updateAddToCartButton(productId) {
   const productCard = document.querySelector(`[data-product-id="${productId}"]`);
@@ -262,7 +382,7 @@ function setupAddToCartListeners() {
   
   buttons.forEach(button => {
     button.addEventListener('click', (e) => {
-      const productId = e.target.dataset.productId;
+      const productId = e.currentTarget.dataset.productId;
       addToCart(productId);
     });
   });
@@ -280,6 +400,8 @@ function addToCart(productId) {
     id: productId,
     name: product.name,
     price: product.price,
+    currency: product.currency || 'BCV',
+    image: product.image,
     variants: variants,
     variantString: variantString,
     quantity: 1
@@ -301,6 +423,7 @@ function findProductById(productId) {
 
 // ===== FORMAT VARIANTS =====
 function formatVariants(variants) {
+  if (!variants || Object.keys(variants).length === 0) return '';
   return Object.entries(variants)
     .map(([key, value]) => `${getVariantLabel(key)}: ${value}`)
     .join(' | ');
@@ -317,17 +440,23 @@ function updateCartUI() {
   if (cart.length === 0) {
     cartItems.innerHTML = '<div class="cart-empty">Tu carrito está vacío</div>';
   } else {
-    cartItems.innerHTML = cart.map((item, index) => `
-      <div class="cart-item">
-        <div class="cart-item-image"></div>
-        <div class="cart-item-details">
-          <div class="cart-item-name">${item.name}</div>
-          <div class="cart-item-variants">${item.variantString}</div>
-          <div class="cart-item-price">$${item.price.toFixed(2)}</div>
-          <button class="cart-item-remove" data-index="${index}">Eliminar</button>
+    cartItems.innerHTML = cart.map((item, index) => {
+      const cur = item.currency || 'BCV';
+      const priceDisplay = cur === 'DIVISAS' ? `$${item.price} USD` : `${item.price} BCV`;
+      return `
+        <div class="cart-item">
+          <div class="cart-item-image">
+            ${item.image ? `<img src="${item.image}" alt="${item.name}" style="width: 100%; height: 100%; object-fit: contain;">` : ''}
+          </div>
+          <div class="cart-item-details">
+            <div class="cart-item-name">${item.name}</div>
+            <div class="cart-item-variants">${item.variantString}</div>
+            <div class="cart-item-price">${priceDisplay}</div>
+            <button class="cart-item-remove" data-index="${index}">Eliminar</button>
+          </div>
         </div>
-      </div>
-    `).join('');
+      `;
+    }).join('');
 
     // Add remove listeners
     document.querySelectorAll('.cart-item-remove').forEach(button => {
@@ -338,9 +467,13 @@ function updateCartUI() {
     });
   }
 
-  // Update total
-  const total = cart.reduce((sum, item) => sum + item.price, 0);
-  cartTotal.textContent = `$${total.toFixed(2)}`;
+  // Update total (group by currency)
+  const totalBCV = cart.filter(i => (i.currency || 'BCV') === 'BCV').reduce((sum, i) => sum + i.price, 0);
+  const totalDivisas = cart.filter(i => i.currency === 'DIVISAS').reduce((sum, i) => sum + i.price, 0);
+  let totalStr = '';
+  if (totalBCV > 0) totalStr += `${totalBCV} BCV`;
+  if (totalDivisas > 0) totalStr += (totalStr ? ' + ' : '') + `$${totalDivisas} USD`;
+  cartTotal.textContent = totalStr || '0';
 }
 
 // ===== REMOVE FROM CART =====
@@ -587,12 +720,16 @@ function renderResultsStep() {
       <div class="results-section">
         <h3>Kit Sugerido</h3>
         <div class="kit-products">
-          ${recommendations.map(product => `
-            <div class="kit-product">
-              <div class="kit-product-name">${product.name}</div>
-              <div class="kit-product-price">$${product.price.toFixed(2)}</div>
-            </div>
-          `).join('')}
+          ${recommendations.map(product => {
+            const cur = product.currency || 'BCV';
+            const priceStr = cur === 'DIVISAS' ? `$${product.price} USD` : `${product.price} BCV`;
+            return `
+              <div class="kit-product">
+                <div class="kit-product-name">${product.name}</div>
+                <div class="kit-product-price">${priceStr}</div>
+              </div>
+            `;
+          }).join('')}
         </div>
       </div>
       
@@ -768,26 +905,24 @@ function calculateResults() {
 function getRecommendations(goal) {
   const recommendations = {
     muscle: [
-      { id: 'supp-005', name: 'Whey Protein Nutricost', price: 49.99 },
-      { id: 'supp-006', name: 'Whey Protein Muscletech', price: 59.99 },
-      { id: 'supp-003', name: 'Creatina Muscletech', price: 44.99 },
-      { id: 'supp-001', name: 'Creatina Nutrex', price: 39.99 },
-      { id: 'supp-014', name: 'Mantequilla de Maní Jif', price: 8.99 }
+      { id: 'supp-005', name: 'Whey Protein Nutricost', price: 75, currency: 'BCV' },
+      { id: 'supp-006', name: 'Whey Protein Muscletech', price: 85, currency: 'BCV' },
+      { id: 'supp-003', name: 'Creatina Muscletech', price: 45, currency: 'BCV' },
+      { id: 'supp-001', name: 'Creatina Nutrex', price: 35, currency: 'BCV' },
+      { id: 'supp-014', name: 'Mantequilla de Maní Jif', price: 25, currency: 'BCV' }
     ],
     definition: [
-      { id: 'supp-008', name: 'Whey Protein Isolate', price: 69.99 },
-      { id: 'supp-007', name: 'Whey Protein Sixstar', price: 39.99 },
-      { id: 'supp-002', name: 'Creatina Healthy Foods', price: 29.99 },
-      { id: 'supp-004', name: 'Creatina Orgain', price: 34.99 },
-      { id: 'supp-010', name: 'Magnesio Kirkland', price: 24.99 }
+      { id: 'supp-008', name: 'Whey Protein Isolate', price: 85, currency: 'BCV' },
+      { id: 'supp-007', name: 'Whey Protein Sixstar', price: 75, currency: 'BCV' },
+      { id: 'supp-002', name: 'Creatina Healthy Foods', price: 35, currency: 'BCV' },
+      { id: 'supp-004', name: 'Creatina Orgain', price: 50, currency: 'BCV' },
+      { id: 'supp-010', name: 'Magnesio Kirkland', price: 55, currency: 'BCV' }
     ],
     wellness: [
-      { id: 'supp-008', name: 'Whey Protein Isolate', price: 69.99 },
-      { id: 'supp-011', name: 'Vitaminas A, C, D3, E, B12 - People Choice', price: 29.99 },
-      { id: 'supp-012', name: 'Multivitamínico Nature Bounty', price: 34.99 },
-      { id: 'supp-013', name: 'Multivitamínico Kirkland', price: 19.99 },
-      { id: 'supp-009', name: 'Magnesio Nature Bounty', price: 19.99 },
-      { id: 'supp-015', name: 'Biotina y Ácido Hialurónico Nature Bounty', price: 24.99 }
+      { id: 'supp-008', name: 'Whey Protein Isolate', price: 85, currency: 'BCV' },
+      { id: 'supp-011', name: 'Vitaminas A, C, D3, E, B12 - People Choice', price: 5, currency: 'BCV' },
+      { id: 'supp-010', name: 'Magnesio Kirkland', price: 55, currency: 'BCV' },
+      { id: 'supp-015', name: 'Biotina y Ácido Hialurónico Nature Bounty', price: 55, currency: 'BCV' }
     ]
   };
 
@@ -830,3 +965,149 @@ function getFirstVariants(product) {
   }
   return variants;
 }
+
+// ===== AETHER FLOW CANVAS BACKGROUND =====
+function initAetherFlow() {
+  const canvas = document.getElementById('aether-canvas');
+  if (!canvas) return;
+  
+  const ctx = canvas.getContext('2d');
+  let animationFrameId;
+  let particles = [];
+  const mouse = { x: null, y: null, radius: 200 };
+
+  class Particle {
+      constructor(x, y, directionX, directionY, size, color) {
+          this.x = x;
+          this.y = y;
+          this.directionX = directionX;
+          this.directionY = directionY;
+          this.size = size;
+          this.color = color;
+      }
+
+      draw() {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+          ctx.fillStyle = this.color;
+          ctx.fill();
+      }
+
+      update() {
+          if (this.x > canvas.width || this.x < 0) {
+              this.directionX = -this.directionX;
+          }
+          if (this.y > canvas.height || this.y < 0) {
+              this.directionY = -this.directionY;
+          }
+
+          if (mouse.x !== null && mouse.y !== null) {
+              let dx = mouse.x - this.x;
+              let dy = mouse.y - this.y;
+              let distance = Math.sqrt(dx * dx + dy * dy);
+              if (distance < mouse.radius + this.size) {
+                  const forceDirectionX = dx / distance;
+                  const forceDirectionY = dy / distance;
+                  const force = (mouse.radius - distance) / mouse.radius;
+                  this.x -= forceDirectionX * force * 5;
+                  this.y -= forceDirectionY * force * 5;
+              }
+          }
+
+          this.x += this.directionX;
+          this.y += this.directionY;
+          this.draw();
+      }
+  }
+
+  function init() {
+      particles = [];
+      // Aseguramos un mínimo de 70 partículas para pantallas pequeñas
+      let numberOfParticles = Math.max(70, (canvas.height * canvas.width) / 9000);
+      for (let i = 0; i < numberOfParticles; i++) {
+          let size = (Math.random() * 2) + 1;
+          let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
+          let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
+          let directionX = (Math.random() * 0.4) - 0.2;
+          let directionY = (Math.random() * 0.4) - 0.2;
+          let color = 'rgba(0, 0, 0, 0.4)'; // Black particles
+          particles.push(new Particle(x, y, directionX, directionY, size, color));
+      }
+  }
+
+  let lastWidth = window.innerWidth;
+  const resizeCanvas = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      // Solo reiniciamos las partículas si cambia el ancho (ej. rotar pantalla)
+      // para evitar flickering cuando la barra de direcciones del móvil se oculta al scrollear
+      if (window.innerWidth !== lastWidth || particles.length === 0) {
+          lastWidth = window.innerWidth;
+          init(); 
+      }
+  };
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+
+  const connect = () => {
+      let opacityValue = 1;
+      for (let a = 0; a < particles.length; a++) {
+          for (let b = a; b < particles.length; b++) {
+              let distance = ((particles[a].x - particles[b].x) * (particles[a].x - particles[b].x))
+                  + ((particles[a].y - particles[b].y) * (particles[a].y - particles[b].y));
+              
+              // Aumentamos la distancia mínima de conexión en móviles
+              let maxDistanceSq = Math.max(15000, (canvas.width / 7) * (canvas.height / 7));
+              
+              if (distance < maxDistanceSq) {
+                  opacityValue = 1 - (distance / maxDistanceSq);
+                  
+                  let dx_mouse_a = particles[a].x - mouse.x;
+                  let dy_mouse_a = particles[a].y - mouse.y;
+                  let distance_mouse_a = Math.sqrt(dx_mouse_a*dx_mouse_a + dy_mouse_a*dy_mouse_a);
+
+                  if (mouse.x && distance_mouse_a < mouse.radius) {
+                       ctx.strokeStyle = `rgba(0, 0, 0, ${opacityValue})`;
+                  } else {
+                       ctx.strokeStyle = `rgba(0, 0, 0, ${opacityValue * 0.4})`;
+                  }
+                  
+                  ctx.lineWidth = 1;
+                  ctx.beginPath();
+                  ctx.moveTo(particles[a].x, particles[a].y);
+                  ctx.lineTo(particles[b].x, particles[b].y);
+                  ctx.stroke();
+              }
+          }
+      }
+  };
+
+  const animate = () => {
+      animationFrameId = requestAnimationFrame(animate);
+      ctx.fillStyle = '#f8fafc';
+      ctx.fillRect(0, 0, innerWidth, innerHeight);
+
+      for (let i = 0; i < particles.length; i++) {
+          particles[i].update();
+      }
+      connect();
+  };
+  
+  const handleMouseMove = (event) => {
+      mouse.x = event.clientX;
+      mouse.y = event.clientY;
+  };
+  
+  const handleMouseOut = () => {
+      mouse.x = null;
+      mouse.y = null;
+  };
+
+  window.addEventListener('mousemove', handleMouseMove);
+  window.addEventListener('mouseout', handleMouseOut);
+
+  init();
+  animate();
+}
+
+document.addEventListener('DOMContentLoaded', initAetherFlow);
