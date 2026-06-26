@@ -93,6 +93,7 @@ const productsData = {
       image: 'zapatos png/ADIDAS CLOUD WHITE FOAM.png',
       name: 'Adidas Cloud White Foam',
       category: 'Tenis para hombre',
+      subcategory: 'zapatos',
       price: 60,
       currency: 'DIVISAS',
       description: 'Ligereza extrema y amortiguación suave para máxima comodidad.',
@@ -116,6 +117,7 @@ const productsData = {
       ],
       name: 'New Balance Garoe V2',
       category: 'Tenis para hombre',
+      subcategory: 'zapatos',
       price: 110,
       currency: 'DIVISAS',
       description: 'Trail runner resistente con soporte superior para terrenos exigentes.',
@@ -135,12 +137,83 @@ const productsData = {
       image: 'ropapng/short.png',
       name: 'Short DSG',
       category: 'Ropa para hombre',
+      subcategory: 'shorts',
       price: 15,
       currency: 'BCV',
       description: 'Short deportivo DSG ligero y transpirable, ideal para entrenamientos y running.',
       isNew: true,
       variants: {
         sizes: ['S', 'M', 'L']
+      }
+    },
+    {
+      id: 'cloth-003',
+      image: 'ropapng/camisetaazul.png',
+      name: 'Camiseta Azul',
+      category: 'Ropa para hombre',
+      subcategory: 'camisas',
+      price: 20,
+      currency: 'DIVISAS',
+      description: 'Camiseta deportiva de alto rendimiento.',
+      isNew: true,
+      variants: {
+        sizes: ['S', 'M', 'L', 'XL']
+      }
+    },
+    {
+      id: 'cloth-004',
+      image: 'ropapng/franelillanaranja.png',
+      name: 'Franelilla Naranja',
+      category: 'Ropa para hombre',
+      subcategory: 'franelas',
+      price: 15,
+      currency: 'DIVISAS',
+      description: 'Franelilla ligera para entrenamiento intenso.',
+      isNew: false,
+      variants: {
+        sizes: ['S', 'M', 'L']
+      }
+    },
+    {
+      id: 'cloth-005',
+      image: 'ropapng/shortcuadros.png',
+      name: 'Short a Cuadros',
+      category: 'Ropa para hombre',
+      subcategory: 'shorts',
+      price: 18,
+      currency: 'DIVISAS',
+      description: 'Short con diseño de cuadros, muy cómodo y versátil.',
+      isNew: true,
+      variants: {
+        sizes: ['S', 'M', 'L']
+      }
+    },
+    {
+      id: 'cloth-006',
+      image: 'ropapng/shortnaranja.png',
+      name: 'Short Naranja Deportivo',
+      category: 'Ropa para hombre',
+      subcategory: 'shorts',
+      price: 15,
+      currency: 'DIVISAS',
+      description: 'Short deportivo llamativo ideal para running.',
+      isNew: false,
+      variants: {
+        sizes: ['S', 'M', 'L', 'XL']
+      }
+    },
+    {
+      id: 'cloth-007',
+      image: 'ropapng/sudaderanike.png',
+      name: 'Sudadera Nike',
+      category: 'Ropa para hombre',
+      subcategory: 'accesorios',
+      price: 35,
+      currency: 'DIVISAS',
+      description: 'Sudadera Nike clásica para protegerte del clima frío.',
+      isNew: true,
+      variants: {
+        sizes: ['S', 'M', 'L', 'XL']
       }
     }
   ],
@@ -154,6 +227,7 @@ const productsData = {
       ],
       name: 'New Balance 740',
       category: 'Tenis para mujer',
+      subcategory: 'zapatos',
       price: 115,
       currency: 'DIVISAS',
       description: 'Zapatilla retro con diseño clásico y comodidad moderna para el día a día.',
@@ -177,6 +251,7 @@ const productsData = {
       ],
       name: 'Adidas Grand Court 2.0',
       category: 'Tenis para mujer',
+      subcategory: 'zapatos',
       price: 75,
       currency: 'DIVISAS',
       description: 'Estilo court clásico actualizado con materiales premium y comodidad diaria.',
@@ -196,12 +271,41 @@ const productsData = {
       image: 'ropapng/shortsadidas.png',
       name: 'Shorts Adidas',
       category: 'Ropa para mujer',
+      subcategory: 'shorts',
       price: 20,
       currency: 'BCV',
       description: 'Shorts clásicos Adidas de tejido absorbente, máxima comodidad para tu día a día o entrenamiento.',
       isNew: true,
       variants: {
         sizes: ['S', 'M', 'L', 'XL']
+      }
+    },
+    {
+      id: 'cloth-008',
+      image: 'ropapng/shortestampadoblanco.png',
+      name: 'Short Estampado Blanco',
+      category: 'Ropa para mujer',
+      subcategory: 'shorts',
+      price: 18,
+      currency: 'DIVISAS',
+      description: 'Short con un estampado elegante y cómodo para hacer ejercicio.',
+      isNew: true,
+      variants: {
+        sizes: ['XS', 'S', 'M', 'L']
+      }
+    },
+    {
+      id: 'cloth-009',
+      image: 'ropapng/shortgrismujer.png',
+      name: 'Short Gris Deportivo',
+      category: 'Ropa para mujer',
+      subcategory: 'shorts',
+      price: 15,
+      currency: 'DIVISAS',
+      description: 'Short básico gris, excelente para cualquier rutina de ejercicios.',
+      isNew: false,
+      variants: {
+        sizes: ['XS', 'S', 'M', 'L']
       }
     }
   ]

@@ -41,6 +41,7 @@ const calculatorContent = document.getElementById('calculator-content');
 
 // ===== INITIALIZE =====
 document.addEventListener('DOMContentLoaded', () => {
+  renderFilters(currentCategory);
   renderProducts(currentCategory);
   setupEventListeners();
 });
@@ -98,14 +99,49 @@ function setupEventListeners() {
   }
 }
 
+// ===== DYNAMIC FILTERS =====
+function renderFilters(category) {
+  const dynamicFilters = document.getElementById('dynamic-filters');
+  if (!dynamicFilters) return;
+
+  if (category === 'men' || category === 'women') {
+    dynamicFilters.innerHTML = `
+      <div class="filter-group">
+        <h4 class="filter-group-title">Subcategorías</h4>
+        <ul class="filter-list">
+          <li><label><input type="checkbox" class="filter-checkbox" data-type="subcategory" value="zapatos"> Zapatos</label></li>
+          <li><label><input type="checkbox" class="filter-checkbox" data-type="subcategory" value="shorts"> Shorts</label></li>
+          <li><label><input type="checkbox" class="filter-checkbox" data-type="subcategory" value="franelas"> Franelas</label></li>
+          <li><label><input type="checkbox" class="filter-checkbox" data-type="subcategory" value="camisas"> Camisas</label></li>
+          <li><label><input type="checkbox" class="filter-checkbox" data-type="subcategory" value="accesorios"> Accesorios</label></li>
+        </ul>
+      </div>
+    `;
+  } else {
+    dynamicFilters.innerHTML = '';
+  }
+
+  // Bind change events to new dynamically created checkboxes
+  const newCheckboxes = dynamicFilters.querySelectorAll('.filter-checkbox');
+  newCheckboxes.forEach(cb => {
+    cb.addEventListener('change', () => {
+      renderProducts(currentCategory, searchInput ? searchInput.value.trim() : '');
+    });
+  });
+}
+
 // ===== CATEGORY SWITCHING =====
 function switchCategory(category) {
   currentCategory = category;
   
-  // Hide promotional posters when a category is selected
+  // Hide promotional posters and hero video when a category is selected
   const promotionalPosters = document.querySelector('.promotional-posters');
   if (promotionalPosters) {
     promotionalPosters.style.display = 'none';
+  }
+  const heroSection = document.getElementById('hero-section');
+  if (heroSection) {
+    heroSection.style.display = 'none';
   }
   
   // Update active tab
@@ -121,9 +157,12 @@ function switchCategory(category) {
     categoryTitle.textContent = categoryTitles[category];
   }
 
-  // Clear filters
-  const filterCheckboxes = document.querySelectorAll('.filter-checkbox');
-  filterCheckboxes.forEach(cb => cb.checked = false);
+  // Render filters dynamically
+  renderFilters(category);
+
+  // Clear filters outside dynamic area (like Novedades)
+  const staticCheckboxes = document.querySelectorAll('#sidebar-filters .filter-checkbox:not([data-type="subcategory"])');
+  staticCheckboxes.forEach(cb => cb.checked = false);
 
   // Clear search input
   if (searchInput) searchInput.value = '';
@@ -154,12 +193,20 @@ function renderProducts(category, searchTerm = '') {
 
   // Filter by sidebar checkboxes
   const selectedCategories = Array.from(document.querySelectorAll('.filter-checkbox[data-type="category"]:checked')).map(cb => cb.value);
+  const selectedSubcategories = Array.from(document.querySelectorAll('.filter-checkbox[data-type="subcategory"]:checked')).map(cb => cb.value);
   const isNewOnly = document.querySelector('.filter-checkbox[data-type="new"]')?.checked;
 
   if (selectedCategories.length > 0) {
     products = products.filter(p => {
       if (!p.category) return false;
       return selectedCategories.some(c => p.category.includes(c));
+    });
+  }
+
+  if (selectedSubcategories.length > 0) {
+    products = products.filter(p => {
+      if (!p.subcategory) return false;
+      return selectedSubcategories.some(c => p.subcategory === c);
     });
   }
 
