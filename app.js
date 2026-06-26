@@ -1,5 +1,5 @@
 // ===== STATE MANAGEMENT =====
-let currentCategory = 'women';
+let currentCategory = null;
 let cart = [];
 let selectedVariants = {};
 let calculatorStep = 0;
@@ -41,13 +41,23 @@ const calculatorContent = document.getElementById('calculator-content');
 
 // ===== INITIALIZE =====
 document.addEventListener('DOMContentLoaded', () => {
-  renderFilters(currentCategory);
+  if (categoryTitle) categoryTitle.textContent = '';
+  if (navTabs) navTabs.forEach(tab => tab.classList.remove('active'));
   renderProducts(currentCategory);
   setupEventListeners();
 });
 
 // ===== EVENT LISTENERS =====
 function setupEventListeners() {
+  // Logos - redirect to home
+  const logos = document.querySelectorAll('.logo');
+  logos.forEach(logo => {
+    logo.style.cursor = 'pointer';
+    logo.addEventListener('click', () => {
+      window.location.reload();
+    });
+  });
+
   // Navigation tabs
   if (navTabs) {
     navTabs.forEach(tab => {
@@ -113,6 +123,7 @@ function renderFilters(category) {
           <li><label><input type="checkbox" class="filter-checkbox" data-type="subcategory" value="shorts"> Shorts</label></li>
           <li><label><input type="checkbox" class="filter-checkbox" data-type="subcategory" value="franelas"> Franelas</label></li>
           <li><label><input type="checkbox" class="filter-checkbox" data-type="subcategory" value="camisas"> Camisas</label></li>
+          <li><label><input type="checkbox" class="filter-checkbox" data-type="subcategory" value="sudaderas"> Sudaderas</label></li>
           <li><label><input type="checkbox" class="filter-checkbox" data-type="subcategory" value="accesorios"> Accesorios</label></li>
         </ul>
       </div>
@@ -179,7 +190,17 @@ function handleSearch() {
 
 // ===== RENDER PRODUCTS =====
 function renderProducts(category, searchTerm = '') {
-  let products = productsData[category];
+  let products = [];
+  
+  if (!category) {
+    // Show all products if no category is selected
+    for (const cat in productsData) {
+      const catProducts = productsData[cat].map(p => ({ ...p, _originalCategory: cat }));
+      products = products.concat(catProducts);
+    }
+  } else {
+    products = productsData[category].map(p => ({ ...p, _originalCategory: category }));
+  }
 
   // Filter by search term if provided
   if (searchTerm) {
@@ -224,13 +245,13 @@ function renderProducts(category, searchTerm = '') {
   }
 
   // Render all products for the category grid
-  productsGrid.innerHTML = products.map(product => createProductCard(product, category)).join('');
+  productsGrid.innerHTML = products.map(product => createProductCard(product, product._originalCategory)).join('');
   
   // Add event listeners for variant selection
   setupVariantListeners();
   
-  // Add event listeners for accordion
-  setupAccordionListeners();
+  // Add event listeners for product cards (to open modal)
+  setupProductCardListeners();
   
   // Add event listeners for add to cart buttons
   setupAddToCartListeners();
@@ -253,7 +274,7 @@ function preloadHoverImages(products) {
 // ===== CREATE PRODUCT CARD =====
 function createProductCard(product, category) {
   const variantSelectors = createVariantSelectors(product, category);
-  const accordion = createAccordion(product);
+  // const accordion = createAccordion(product); // Removed for clean grid
 
   const currency = product.currency || 'BCV';
   const priceLabel = currency === 'DIVISAS' ? `$${product.price} USD` : `${product.price} BCV`;
@@ -557,52 +578,101 @@ function closeCart() {
   document.body.style.overflow = '';
 }
 
-// ===== CREATE ACCORDION =====
-function createAccordion(product) {
-  if (!product.technicalInfo) return '';
-
-  const items = Object.entries(product.technicalInfo).map(([label, value]) => `
-    <div class="accordion-item">
-      <button class="accordion-header">
-        <span>${label}</span>
-        <span class="accordion-icon">▼</span>
-      </button>
-      <div class="accordion-content">
-        <div class="accordion-body">
-          <p><span class="accordion-label">${label}:</span> ${value}</p>
-        </div>
-      </div>
-    </div>
-  `).join('');
-
-  return `
-    <div class="accordion">
-      ${items}
-    </div>
-  `;
-}
-
-// ===== SETUP ACCORDION LISTENERS =====
-function setupAccordionListeners() {
-  const accordionHeaders = document.querySelectorAll('.accordion-header');
-  
-  accordionHeaders.forEach(header => {
-    header.addEventListener('click', (e) => {
-      const item = e.target.closest('.accordion-item');
-      const isOpen = item.classList.contains('open');
-      
-      // Close all items in the same accordion
-      const accordion = item.closest('.accordion');
-      accordion.querySelectorAll('.accordion-item').forEach(i => {
-        i.classList.remove('open');
-      });
-      
-      // Open clicked item if it was closed
-      if (!isOpen) {
-        item.classList.add('open');
+// ===== PRODUCT MODAL FUNCTIONS =====
+function setupProductCardListeners() {
+  const productCards = document.querySelectorAll('.product-card');
+  productCards.forEach(card => {
+    card.addEventListener('click', (e) => {
+      // Ignore if clicking on button, select, color-thumb, etc.
+      if (e.target.closest('.add-to-cart-btn') || 
+          e.target.closest('.variant-option') || 
+          e.target.closest('.color-thumb') ||
+          e.target.tagName.toLowerCase() === 'a') {
+        return;
       }
+      
+      const productId = card.dataset.productId;
+      openProductModal(productId);
     });
   });
+}
+
+function openProductModal(productId) {
+  // Find product across all categories
+  let product = null;
+  for (const cat in productsData) {
+    product = productsData[cat].find(p => p.id === productId);
+    if (product) break;
+  }
+  
+  if (!product) return;
+
+  const modalOverlay = document.getElementById('product-modal-overlay');
+  const modal = document.getElementById('product-modal');
+  const content = document.getElementById('product-modal-content');
+  
+  if (!modal || !content) return;
+
+  const currency = product.currency || 'BCV';
+  const priceLabel = currency === 'DIVISAS' ? `$${product.price} USD` : `${product.price} BCV`;
+  
+  // Build tech info list
+  let techInfoHtml = '';
+  if (product.technicalInfo) {
+    const techItems = Object.entries(product.technicalInfo).map(([label, value]) => `
+      <li class="pm-tech-item">
+        <span class="pm-tech-key">${label}</span>
+        <span class="pm-tech-val">${value}</span>
+      </li>
+    `).join('');
+    techInfoHtml = `
+      <div class="pm-tech-info">
+        <h4 class="pm-tech-title">Especificaciones</h4>
+        <ul class="pm-tech-list">
+          ${techItems}
+        </ul>
+      </div>
+    `;
+  }
+
+  // Get image (use first color image if available)
+  let imgUrl = product.image;
+  if (product.colorImages && product.colorImages.length > 0) {
+    imgUrl = product.colorImages[0].images[0];
+  }
+
+  content.innerHTML = `
+    <div class="pm-image-col">
+      <img src="${imgUrl}" alt="${product.name}">
+    </div>
+    <div class="pm-details-col">
+      <h2 class="pm-title">${product.name}</h2>
+      <div class="pm-price">${priceLabel}</div>
+      ${product.description ? `<p class="pm-description">${product.description}</p>` : ''}
+      ${techInfoHtml}
+    </div>
+  `;
+
+  // Bind close buttons
+  const closeBtn = document.getElementById('product-modal-close');
+  closeBtn.onclick = closeProductModal;
+  modalOverlay.onclick = closeProductModal;
+
+  // Open modal
+  modalOverlay.classList.add('active');
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeProductModal() {
+  const modalOverlay = document.getElementById('product-modal-overlay');
+  const modal = document.getElementById('product-modal');
+  
+  if (modalOverlay && modal) {
+    modalOverlay.classList.remove('active');
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+  }
 }
 
 // ===== GOAL CALCULATOR =====

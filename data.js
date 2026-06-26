@@ -7,7 +7,14 @@ const productsData = {
       price: 35,
       currency: 'BCV',
       description: 'Creatina Monohidratada pura para mejorar la fuerza y el rendimiento muscular.',
-      isNew: true
+      isNew: true,
+      technicalInfo: {
+        'Porciones': '60',
+        'Dosis': '5g de Creatina Monohidratada por porción',
+        'Ingredientes': '100% Creatina Monohidratada Micronizada',
+        'Beneficios': 'Aumenta la fuerza, potencia y masa muscular',
+        'Uso sugerido': 'Mezclar 1 scoop (5g) con 8 oz de agua o jugo'
+      }
     },
     {
       id: 'sup-002',
@@ -16,7 +23,13 @@ const productsData = {
       price: 35,
       currency: 'BCV',
       description: 'Creatina de alta pureza para mayor energía y desarrollo muscular.',
-      isNew: false
+      isNew: false,
+      technicalInfo: {
+        'Porciones': '100',
+        'Dosis': '5g de Creatina Monohidratada por porción',
+        'Beneficios': 'Mejora el rendimiento atlético y la recuperación',
+        'Certificaciones': 'Libre de gluten, Vegano'
+      }
     },
     {
       id: 'sup-003',
@@ -25,7 +38,12 @@ const productsData = {
       price: 45,
       currency: 'BCV',
       description: 'Fórmula avanzada de creatina Platinum 100% pure monohydrate.',
-      isNew: true
+      isNew: true,
+      technicalInfo: {
+        'Porciones': '60',
+        'Dosis': '5g de Creatina Monohidratada Platinum por porción',
+        'Beneficios': 'Acelera la regeneración de ATP durante el entrenamiento pesado'
+      }
     },
     {
       id: 'sup-004',
@@ -33,7 +51,12 @@ const productsData = {
       name: 'Creatina Orgain (135 Servicios)',
       price: 50,
       currency: 'BCV',
-      description: 'Creatina premium para máximo rendimiento deportivo.'
+      description: 'Creatina premium para máximo rendimiento deportivo.',
+      technicalInfo: {
+        'Porciones': '135',
+        'Dosis': '5g de Creatina Monohidratada',
+        'Certificaciones': 'USDA Organic, Non-GMO'
+      }
     },
     {
       id: 'sup-005',
@@ -41,7 +64,13 @@ const productsData = {
       name: 'Whey Protein Nutricost',
       price: 75,
       currency: 'BCV',
-      description: 'Proteína de suero de leche de rápida absorción.'
+      description: 'Proteína de suero de leche de rápida absorción.',
+      technicalInfo: {
+        'Proteína por porción': '25g',
+        'Azúcares': 'Menos de 2g',
+        'Ingredientes': 'Concentrado de Proteína de Suero (Whey Concentrate)',
+        'Beneficios': 'Apoya la recuperación y el crecimiento muscular'
+      }
     },
     {
       id: 'sup-006',
@@ -49,7 +78,12 @@ const productsData = {
       name: 'Whey Protein Muscletech',
       price: 85,
       currency: 'BCV',
-      description: 'Proteína premium con péptidos de suero para una rápida recuperación.'
+      description: 'Proteína premium con péptidos de suero para una rápida recuperación.',
+      technicalInfo: {
+        'Proteína por porción': '30g',
+        'Matriz': 'Mezcla de péptidos y aislado de suero',
+        'Beneficios': 'Absorción ultra rápida'
+      }
     },
     {
       id: 'sup-007',
@@ -57,16 +91,26 @@ const productsData = {
       name: 'Whey Protein Sixstar',
       price: 75,
       currency: 'BCV',
-      description: 'Proteína 100% de suero diseñada para potenciar la recuperación.'
+      description: 'Proteína 100% de suero diseñada para potenciar la recuperación.',
+      technicalInfo: {
+        'Proteína por porción': '30g',
+        'Adiciones': 'Enriquecido con BCAAs y Glutamina',
+        'Sabor': 'Triple Chocolate'
+      }
     },
-
     {
       id: 'sup-011',
       image: 'suplementospng/mantequillademanijif-removebg-preview.png',
       name: 'Mantequilla de maní Jif',
       price: 25,
       currency: 'BCV',
-      description: 'Mantequilla de maní cremosa, excelente fuente de proteína.'
+      description: 'Mantequilla de maní cremosa, excelente fuente de proteína.',
+      technicalInfo: {
+        'Proteína por porción': '7g',
+        'Calorías por porción': '190 kcal',
+        'Ingredientes': 'Maní tostado, azúcar, aceites vegetales',
+        'Textura': 'Extra Cremosa'
+      }
     },
   ],
   vitamins: [
@@ -76,7 +120,12 @@ const productsData = {
       name: 'Magnesio Kirkland',
       price: 55,
       currency: 'BCV',
-      description: 'Suplemento mineral esencial para la salud ósea y muscular.'
+      description: 'Suplemento mineral esencial para la salud ósea y muscular.',
+      technicalInfo: {
+        'Tipo': 'Citrato de Magnesio',
+        'Beneficios': 'Alta biodisponibilidad, relaja músculos, salud del sistema nervioso',
+        'Dosis': 'Consultar empaque'
+      }
     },
     {
       id: 'sup-012',
@@ -84,7 +133,11 @@ const productsData = {
       name: 'Biotina y Ácido Hialurónico Nature Bounty',
       price: 55,
       currency: 'BCV',
-      description: 'Fórmula para el cuidado de la piel, cabello y uñas.'
+      description: 'Fórmula para el cuidado de la piel, cabello y uñas.',
+      technicalInfo: {
+        'Beneficios': 'Piel radiante, cabello fuerte y uñas saludables',
+        'Ingredientes Clave': 'Biotina (Vitamina B7) y Ácido Hialurónico'
+      }
     }
   ],
   men: [
@@ -144,6 +197,12 @@ const productsData = {
       isNew: true,
       variants: {
         sizes: ['S', 'M', 'L']
+      },
+      technicalInfo: {
+        'Material': '100% Poliéster Dri-FIT',
+        'Ajuste': 'Regular fit',
+        'Cintura': 'Elástica con cordón ajustable',
+        'Bolsillos': 'Bolsillos laterales'
       }
     },
     {
@@ -158,6 +217,12 @@ const productsData = {
       isNew: true,
       variants: {
         sizes: ['S', 'M', 'L', 'XL']
+      },
+      technicalInfo: {
+        'Material': 'Algodón suave y transpirable',
+        'Ajuste': 'Slim fit',
+        'Cuello': 'Cuello redondo',
+        'Uso': 'Entrenamiento o estilo casual'
       }
     },
     {
@@ -172,6 +237,12 @@ const productsData = {
       isNew: false,
       variants: {
         sizes: ['S', 'M', 'L']
+      },
+      technicalInfo: {
+        'Material': 'Poliéster reciclado',
+        'Diseño': 'Sin mangas para máxima libertad',
+        'Tecnología': 'Control de humedad',
+        'Uso': 'Gimnasio o running'
       }
     },
     {
@@ -186,6 +257,12 @@ const productsData = {
       isNew: true,
       variants: {
         sizes: ['S', 'M', 'L']
+      },
+      technicalInfo: {
+        'Material': 'Tela tejida duradera',
+        'Diseño': 'Estampado de cuadros clásicos',
+        'Bolsillos': 'Bolsillos traseros con cierre de botón',
+        'Uso': 'Lifestyle / Casual'
       }
     },
     {
@@ -200,6 +277,12 @@ const productsData = {
       isNew: false,
       variants: {
         sizes: ['S', 'M', 'L', 'XL']
+      },
+      technicalInfo: {
+        'Material': 'Poliéster de secado rápido',
+        'Visibilidad': 'Color de alta visibilidad para exteriores',
+        'Forro': 'Forro interior de malla',
+        'Uso': 'Correr en exteriores, deportes'
       }
     },
     {
@@ -207,13 +290,19 @@ const productsData = {
       image: 'ropapng/sudaderanike.png',
       name: 'Sudadera Nike',
       category: 'Ropa para hombre',
-      subcategory: 'accesorios',
+      subcategory: 'sudaderas',
       price: 35,
       currency: 'DIVISAS',
       description: 'Sudadera Nike clásica para protegerte del clima frío.',
       isNew: true,
       variants: {
         sizes: ['S', 'M', 'L', 'XL']
+      },
+      technicalInfo: {
+        'Material': 'Fleece / Mezcla de algodón y poliéster',
+        'Capucha': 'Capucha forrada con cordón',
+        'Bolsillo': 'Bolsillo frontal estilo canguro',
+        'Corte': 'Clásico y relajado'
       }
     }
   ],
@@ -278,6 +367,12 @@ const productsData = {
       isNew: true,
       variants: {
         sizes: ['S', 'M', 'L', 'XL']
+      },
+      technicalInfo: {
+        'Material': 'Tejido AEROREADY que absorbe el sudor',
+        'Ajuste': 'Regular con cintura elástica',
+        'Detalles': 'Logo de Adidas y 3 bandas laterales',
+        'Uso': 'Entrenamiento y running'
       }
     },
     {
@@ -292,6 +387,12 @@ const productsData = {
       isNew: true,
       variants: {
         sizes: ['XS', 'S', 'M', 'L']
+      },
+      technicalInfo: {
+        'Material': 'Poliéster / Spandex elástico',
+        'Ajuste': 'Ceñido al cuerpo (Compression fit)',
+        'Diseño': 'Estampado floral blanco',
+        'Uso': 'Yoga, pilates, gimnasio'
       }
     },
     {
@@ -306,6 +407,12 @@ const productsData = {
       isNew: false,
       variants: {
         sizes: ['XS', 'S', 'M', 'L']
+      },
+      technicalInfo: {
+        'Material': 'Mezcla de algodón suave',
+        'Cintura': 'Cintura elástica ancha para mayor soporte',
+        'Largo': 'Corto por encima de la rodilla',
+        'Uso': 'Casual y entrenamientos ligeros'
       }
     }
   ]
