@@ -54,9 +54,10 @@
         <span>Calculadora de Objetivos</span>
       </button>
       <nav class="nav-tabs">
+        <button class="nav-tab" data-category="men">Hombres</button>
+        <button class="nav-tab active" data-category="women">Mujeres</button>
         <button class="nav-tab" data-category="supplements">Suplementos</button>
-        <button class="nav-tab active" data-category="shoes">Zapatos</button>
-        <button class="nav-tab" data-category="sportswear">Ropa Deportiva</button>
+        <button class="nav-tab" data-category="vitamins">Vitaminas</button>
       </nav>
       <button class="cart-button cart-desktop">
         <span>Carrito</span>
@@ -68,16 +69,49 @@
   <!-- Main Content -->
   <main class="main">
     <div class="container">
-      <div class="carousel-container">
-        <button class="carousel-nav-btn prev-btn" id="carousel-prev">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
-        </button>
-        <div class="products-carousel" id="products-grid">
-          <!-- Products will be rendered here -->
+      <!-- Promotional Posters -->
+      <section class="promotional-posters">
+        <a href="#" class="poster-card">
+          <img src="posters/poster1.png" alt="Promoción 1">
+          <h3>Colección Exclusiva</h3>
+        </a>
+        <a href="#" class="poster-card">
+          <img src="posters/poster2.png" alt="Promoción 2">
+          <h3>Rendimiento Máximo</h3>
+        </a>
+        <a href="#" class="poster-card">
+          <img src="posters/poster3.png" alt="Promoción 3">
+          <h3>Alcanza tus Metas</h3>
+        </a>
+      </section>
+
+      <div class="nike-layout">
+        <!-- Sidebar Filters -->
+        <aside class="sidebar-filters">
+          <h3 class="sidebar-title" id="category-title">Mujeres</h3>
+          
+          <div class="filter-group">
+            <h4 class="filter-group-title">Categorías</h4>
+            <ul class="filter-list">
+              <li><label><input type="checkbox" class="filter-checkbox" data-type="category" value="Tenis"> Zapatillas</label></li>
+              <li><label><input type="checkbox" class="filter-checkbox" data-type="category" value="Ropa"> Ropa Deportiva</label></li>
+            </ul>
+          </div>
+          
+          <div class="filter-group">
+            <h4 class="filter-group-title">Novedades</h4>
+            <ul class="filter-list">
+              <li><label><input type="checkbox" class="filter-checkbox" data-type="new" value="true"> Lo Nuevo</label></li>
+            </ul>
+          </div>
+        </aside>
+
+        <!-- Main Product Grid -->
+        <div class="product-grid-container">
+          <div class="products-grid" id="products-grid">
+            <!-- Products will be rendered here -->
+          </div>
         </div>
-        <button class="carousel-nav-btn next-btn" id="carousel-next">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
-        </button>
       </div>
     </div>
   </main>

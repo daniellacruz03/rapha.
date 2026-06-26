@@ -6,7 +6,8 @@ const productsData = {
       name: 'Creatina Nutrex (60 Servicios)',
       price: 35,
       currency: 'BCV',
-      description: 'Creatina Monohidratada pura para mejorar la fuerza y el rendimiento muscular.'
+      description: 'Creatina Monohidratada pura para mejorar la fuerza y el rendimiento muscular.',
+      isNew: true
     },
     {
       id: 'sup-002',
@@ -14,7 +15,8 @@ const productsData = {
       name: 'Creatina Healthy Foods (100 Servicios)',
       price: 35,
       currency: 'BCV',
-      description: 'Creatina de alta pureza para mayor energía y desarrollo muscular.'
+      description: 'Creatina de alta pureza para mayor energía y desarrollo muscular.',
+      isNew: false
     },
     {
       id: 'sup-003',
@@ -22,7 +24,8 @@ const productsData = {
       name: 'Creatina Muscletech (60 Servicios)',
       price: 45,
       currency: 'BCV',
-      description: 'Fórmula avanzada de creatina Platinum 100% pure monohydrate.'
+      description: 'Fórmula avanzada de creatina Platinum 100% pure monohydrate.',
+      isNew: true
     },
     {
       id: 'sup-004',
@@ -56,34 +59,7 @@ const productsData = {
       currency: 'BCV',
       description: 'Proteína 100% de suero diseñada para potenciar la recuperación.'
     },
-    /*
-    {
-      id: 'sup-008',
-      image: '',
-      name: 'Whey Protein Isolate',
-      price: 0,
-      currency: 'BCV',
-      description: 'Proteína aislada de suero de leche de alta calidad.'
-    },
-    */
-    {
-      id: 'sup-009',
-      image: 'suplementospng/naturemagnesium.png',
-      name: 'Magnesio Kirkland',
-      price: 55,
-      currency: 'BCV',
-      description: 'Suplemento mineral esencial para la salud ósea y muscular.'
-    },
-    /*
-    {
-      id: 'sup-010',
-      image: '',
-      name: 'Vitaminas A, C, D3, E, B12 (People Choice)',
-      price: 5,
-      currency: 'BCV',
-      description: 'Complejo multivitamínico para fortalecer el sistema inmunológico.'
-    },
-    */
+
     {
       id: 'sup-011',
       image: 'suplementospng/mantequillademanijif-removebg-preview.png',
@@ -91,6 +67,16 @@ const productsData = {
       price: 25,
       currency: 'BCV',
       description: 'Mantequilla de maní cremosa, excelente fuente de proteína.'
+    },
+  ],
+  vitamins: [
+    {
+      id: 'sup-009',
+      image: 'suplementospng/naturemagnesium.png',
+      name: 'Magnesio Kirkland',
+      price: 55,
+      currency: 'BCV',
+      description: 'Suplemento mineral esencial para la salud ósea y muscular.'
     },
     {
       id: 'sup-012',
@@ -101,36 +87,16 @@ const productsData = {
       description: 'Fórmula para el cuidado de la piel, cabello y uñas.'
     }
   ],
-  shoes: [
-    {
-      id: 'shoe-001',
-      image: 'zapatos png/NEW BALANCE 740.png',
-      colorImages: [
-        { color: '#ffffff', name: 'White', images: ['zapatos png/NEW BALANCE 740.png', 'zapatos png/NEW BALANCE 740.png'] },
-        { color: '#1e3a8a', name: 'Navy', images: ['zapatos png/NEW BALANCE 740(3).png', 'zapatos png/NEW BALANCE 740(3).png'] }
-      ],
-      name: 'New Balance 740',
-      price: 115,
-      currency: 'DIVISAS',
-      description: 'Zapatilla retro con diseño clásico y comodidad moderna para el día a día.',
-      variants: {
-        sizes: ['38', '39', '40', '41', '42', '43', '44', '45']
-      },
-      technicalInfo: {
-        'Material': 'Malla transpirable con overlays de cuero sintético',
-        'Suela': 'EVA de alta densidad con goma exterior',
-        'Tecnología': 'ABZORB amortiguación en el talón',
-        'Tipo': 'Lifestyle / Training',
-        'Cierre': 'Cordones'
-      }
-    },
+  men: [
     {
       id: 'shoe-002',
       image: 'zapatos png/ADIDAS CLOUD WHITE FOAM.png',
       name: 'Adidas Cloud White Foam',
+      category: 'Tenis para hombre',
       price: 60,
       currency: 'DIVISAS',
       description: 'Ligereza extrema y amortiguación suave para máxima comodidad.',
+      isNew: true,
       variants: {
         sizes: ['38', '39', '40', '41', '42', '43', '44', '45']
       },
@@ -143,33 +109,13 @@ const productsData = {
       }
     },
     {
-      id: 'shoe-003',
-      image: 'zapatos png/ADIDAS GRAND COURT 2.0(2).png',
-      colorImages: [
-        { color: '#ffffff', name: 'Blanco', images: ['zapatos png/ADIDAS GRAND COURT 2.0(2).png', 'zapatos png/ADIDAS GRAND COURT 2.0(2).png'] }
-      ],
-      name: 'Adidas Grand Court 2.0',
-      price: 75,
-      currency: 'DIVISAS',
-      description: 'Estilo court clásico actualizado con materiales premium y comodidad diaria.',
-      variants: {
-        sizes: ['38', '39', '40', '41', '42', '43', '44', '45']
-      },
-      technicalInfo: {
-        'Material': 'Cuero sintético y textil',
-        'Suela': 'Goma vulcanizada',
-        'Tecnología': 'Plantilla acolchada OrthoLite',
-        'Tipo': 'Lifestyle / Court',
-        'Cierre': 'Cordones'
-      }
-    },
-    {
       id: 'shoe-004',
       image: 'zapatos png/NEW BALANCE GAROE V2(1).png',
       colorImages: [
         { color: '#374151', name: 'Gris Oscuro', images: ['zapatos png/NEW BALANCE GAROE V2(1).png', 'zapatos png/NEW BALANCE GAROE V2(1).png'] }
       ],
       name: 'New Balance Garoe V2',
+      category: 'Tenis para hombre',
       price: 110,
       currency: 'DIVISAS',
       description: 'Trail runner resistente con soporte superior para terrenos exigentes.',
@@ -183,54 +129,80 @@ const productsData = {
         'Tipo': 'Trail Running',
         'Cierre': 'Cordones'
       }
-    }
-  ],
-  sportswear: [
+    },
     {
       id: 'cloth-001',
       image: 'ropapng/short.png',
       name: 'Short DSG',
+      category: 'Ropa para hombre',
       price: 15,
       currency: 'BCV',
       description: 'Short deportivo DSG ligero y transpirable, ideal para entrenamientos y running.',
+      isNew: true,
       variants: {
-        sizes: ['S', 'M', 'L', 'XL']
+        sizes: ['S', 'M', 'L']
+      }
+    }
+  ],
+  women: [
+    {
+      id: 'shoe-001',
+      image: 'zapatos png/NEW BALANCE 740.png',
+      colorImages: [
+        { color: '#ffffff', name: 'White', images: ['zapatos png/NEW BALANCE 740.png', 'zapatos png/NEW BALANCE 740.png'] },
+        { color: '#1e3a8a', name: 'Navy', images: ['zapatos png/NEW BALANCE 740(3).png', 'zapatos png/NEW BALANCE 740(3).png'] }
+      ],
+      name: 'New Balance 740',
+      category: 'Tenis para mujer',
+      price: 115,
+      currency: 'DIVISAS',
+      description: 'Zapatilla retro con diseño clásico y comodidad moderna para el día a día.',
+      isNew: true,
+      variants: {
+        sizes: ['35', '36', '37', '38', '39', '40']
+      },
+      technicalInfo: {
+        'Material': 'Malla transpirable con overlays de cuero sintético',
+        'Suela': 'EVA de alta densidad con goma exterior',
+        'Tecnología': 'ABZORB amortiguación en el talón',
+        'Tipo': 'Lifestyle / Training',
+        'Cierre': 'Cordones'
+      }
+    },
+    {
+      id: 'shoe-003',
+      image: 'zapatos png/ADIDAS GRAND COURT 2.0(2).png',
+      colorImages: [
+        { color: '#ffffff', name: 'Blanco', images: ['zapatos png/ADIDAS GRAND COURT 2.0(2).png', 'zapatos png/ADIDAS GRAND COURT 2.0(2).png'] }
+      ],
+      name: 'Adidas Grand Court 2.0',
+      category: 'Tenis para mujer',
+      price: 75,
+      currency: 'DIVISAS',
+      description: 'Estilo court clásico actualizado con materiales premium y comodidad diaria.',
+      variants: {
+        sizes: ['35', '36', '37', '38', '39', '40']
+      },
+      technicalInfo: {
+        'Material': 'Cuero sintético y textil',
+        'Suela': 'Goma vulcanizada',
+        'Tecnología': 'Plantilla acolchada OrthoLite',
+        'Tipo': 'Lifestyle / Court',
+        'Cierre': 'Cordones'
       }
     },
     {
       id: 'cloth-002',
       image: 'ropapng/shortsadidas.png',
       name: 'Shorts Adidas',
+      category: 'Ropa para mujer',
       price: 20,
       currency: 'BCV',
       description: 'Shorts clásicos Adidas de tejido absorbente, máxima comodidad para tu día a día o entrenamiento.',
+      isNew: true,
       variants: {
         sizes: ['S', 'M', 'L', 'XL']
       }
     }
-    /* Productos sin imagen temporalmente ocultos:
-    {
-      id: 'cloth-003',
-      image: '',
-      name: 'Franelas Under Armour',
-      price: 20,
-      currency: 'BCV',
-      description: 'Franela deportiva Under Armour con tecnología de secado rápido.',
-      variants: {
-        sizes: ['S', 'M', 'L', 'XL']
-      }
-    },
-    {
-      id: 'cloth-004',
-      image: '',
-      name: 'Franelas DSG',
-      price: 15,
-      currency: 'BCV',
-      description: 'Franela DSG cómoda y ligera para cualquier rutina de ejercicios.',
-      variants: {
-        sizes: ['S', 'M', 'L', 'XL']
-      }
-    }
-    */
   ]
 };

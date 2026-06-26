@@ -1,6 +1,5 @@
 // ===== STATE MANAGEMENT =====
-let currentCategory = 'shoes';
-let currentProductIndex = 0;
+let currentCategory = 'women';
 let cart = [];
 let selectedVariants = {};
 let calculatorStep = 0;
@@ -16,8 +15,9 @@ let calculatorData = {
 // ===== CATEGORY TITLES =====
 const categoryTitles = {
   supplements: 'Suplementos',
-  shoes: 'Zapatos',
-  sportswear: 'Ropa Deportiva'
+  vitamins: 'Vitaminas',
+  men: 'Hombres',
+  women: 'Mujeres'
 };
 
 // ===== DOM ELEMENTS =====
@@ -38,8 +38,6 @@ const calculatorOverlay = document.getElementById('calculator-overlay');
 const calculatorModal = document.getElementById('calculator-modal');
 const calculatorClose = document.getElementById('calculator-close');
 const calculatorContent = document.getElementById('calculator-content');
-const carouselPrev = document.getElementById('carousel-prev');
-const carouselNext = document.getElementById('carousel-next');
 
 // ===== INITIALIZE =====
 document.addEventListener('DOMContentLoaded', () => {
@@ -67,6 +65,14 @@ function setupEventListeners() {
     searchButton.addEventListener('click', handleSearch);
   }
 
+  // Sidebar filters
+  const filterCheckboxes = document.querySelectorAll('.filter-checkbox');
+  filterCheckboxes.forEach(cb => {
+    cb.addEventListener('change', () => {
+      renderProducts(currentCategory, searchInput ? searchInput.value.trim() : '');
+    });
+  });
+
   // Cart sidebar
   if (cartButtons) {
     cartButtons.forEach(button => {
@@ -90,39 +96,17 @@ function setupEventListeners() {
   if (calculatorOverlay) {
     calculatorOverlay.addEventListener('click', closeCalculator);
   }
-
-  // Carousel Navigation
-  if (carouselPrev) {
-    carouselPrev.addEventListener('click', () => {
-      if (currentProductIndex > 0) {
-        currentProductIndex--;
-        renderProducts(currentCategory, searchInput ? searchInput.value.trim() : '');
-      }
-    });
-  }
-  if (carouselNext) {
-    carouselNext.addEventListener('click', () => {
-      let products = productsData[currentCategory];
-      const searchTerm = searchInput ? searchInput.value.trim() : '';
-      if (searchTerm) {
-        const term = searchTerm.toLowerCase();
-        products = products.filter(product =>
-          product.name.toLowerCase().includes(term) ||
-          product.description.toLowerCase().includes(term)
-        );
-      }
-      if (currentProductIndex < products.length - 1) {
-        currentProductIndex++;
-        renderProducts(currentCategory, searchTerm);
-      }
-    });
-  }
 }
 
 // ===== CATEGORY SWITCHING =====
 function switchCategory(category) {
   currentCategory = category;
-  currentProductIndex = 0;
+  
+  // Hide promotional posters when a category is selected
+  const promotionalPosters = document.querySelector('.promotional-posters');
+  if (promotionalPosters) {
+    promotionalPosters.style.display = 'none';
+  }
   
   // Update active tab
   navTabs.forEach(tab => {
@@ -137,8 +121,12 @@ function switchCategory(category) {
     categoryTitle.textContent = categoryTitles[category];
   }
 
+  // Clear filters
+  const filterCheckboxes = document.querySelectorAll('.filter-checkbox');
+  filterCheckboxes.forEach(cb => cb.checked = false);
+
   // Clear search input
-  searchInput.value = '';
+  if (searchInput) searchInput.value = '';
 
   // Render products
   renderProducts(category);
@@ -146,7 +134,6 @@ function switchCategory(category) {
 
 // ===== SEARCH FUNCTIONALITY =====
 function handleSearch() {
-  currentProductIndex = 0;
   const searchTerm = searchInput.value.trim();
   renderProducts(currentCategory, searchTerm);
 }
@@ -160,8 +147,24 @@ function renderProducts(category, searchTerm = '') {
     const term = searchTerm.toLowerCase();
     products = products.filter(product =>
       product.name.toLowerCase().includes(term) ||
-      product.description.toLowerCase().includes(term)
+      (product.description && product.description.toLowerCase().includes(term)) ||
+      (product.category && product.category.toLowerCase().includes(term))
     );
+  }
+
+  // Filter by sidebar checkboxes
+  const selectedCategories = Array.from(document.querySelectorAll('.filter-checkbox[data-type="category"]:checked')).map(cb => cb.value);
+  const isNewOnly = document.querySelector('.filter-checkbox[data-type="new"]')?.checked;
+
+  if (selectedCategories.length > 0) {
+    products = products.filter(p => {
+      if (!p.category) return false;
+      return selectedCategories.some(c => p.category.includes(c));
+    });
+  }
+
+  if (isNewOnly) {
+    products = products.filter(p => p.isNew);
   }
   
   if (!products || products.length === 0) {
@@ -170,20 +173,11 @@ function renderProducts(category, searchTerm = '') {
         <h3>${searchTerm ? 'No se encontraron productos' : 'No hay productos disponibles'}</h3>
       </div>
     `;
-    if (carouselPrev) carouselPrev.disabled = true;
-    if (carouselNext) carouselNext.disabled = true;
     return;
   }
 
-  // Render current product
-  if (currentProductIndex >= products.length) currentProductIndex = 0;
-  const product = products[currentProductIndex];
-  
-  productsGrid.innerHTML = createProductCard(product, category);
-
-  // Update arrow states
-  if (carouselPrev) carouselPrev.disabled = currentProductIndex === 0;
-  if (carouselNext) carouselNext.disabled = currentProductIndex === products.length - 1;
+  // Render all products for the category grid
+  productsGrid.innerHTML = products.map(product => createProductCard(product, category)).join('');
   
   // Add event listeners for variant selection
   setupVariantListeners();
@@ -194,28 +188,17 @@ function renderProducts(category, searchTerm = '') {
   // Add event listeners for add to cart buttons
   setupAddToCartListeners();
 
-  // Preload adjacent images to prevent loading delays on navigation
-  preloadAdjacentImages(products, currentProductIndex);
+  // Preload hover images to prevent loading delays
+  preloadHoverImages(products);
 }
 
-// ===== PRELOAD ADJACENT IMAGES =====
-function preloadAdjacentImages(products, currentIndex) {
-  const indexesToPreload = [
-    currentIndex + 1 < products.length ? currentIndex + 1 : 0,
-    currentIndex - 1 >= 0 ? currentIndex - 1 : products.length - 1
-  ];
-
-  indexesToPreload.forEach(index => {
-    const p = products[index];
-    if (!p) return;
-    
+// ===== PRELOAD HOVER IMAGES =====
+function preloadHoverImages(products) {
+  products.forEach(p => {
     if (p.colorImages && p.colorImages.length > 0) {
       p.colorImages.forEach(cImg => {
-        if (cImg.images[0]) new Image().src = cImg.images[0];
         if (cImg.images[1]) new Image().src = cImg.images[1];
       });
-    } else if (p.image) {
-      new Image().src = p.image;
     }
   });
 }
@@ -279,16 +262,22 @@ function createProductCard(product, category) {
       : `<div class="image-placeholder"></div>`;
   }
 
+  const isNewHtml = product.isNew ? '<div class="product-is-new">Lo nuevo</div>' : '';
+  const categoryHtml = product.category ? `<div class="product-category">${product.category}</div>` : '';
+
   return `
     <article class="product-card" data-product-id="${product.id}" data-category="${category}">
       ${imageHtml}
-      ${colorThumbsHtml}
       <div class="product-info">
-        <h3 class="product-name" style="font-size: 1.75rem; margin-bottom: 0.25rem;">${product.name}</h3>
-        <div class="product-price" style="justify-content: center; margin-bottom: 1rem; font-weight: 500;">
+        ${isNewHtml}
+        <h3 class="product-name">${product.name}</h3>
+        ${categoryHtml}
+        ${colorThumbsHtml}
+        <div class="product-price">
           ${priceLabel}
         </div>
-        <button class="add-to-cart-btn" data-product-id="${product.id}" style="max-width: 250px; margin: 0 auto;">
+        ${variantSelectors}
+        <button class="add-to-cart-btn" data-product-id="${product.id}">
           <span>Añadir al Carrito</span>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>

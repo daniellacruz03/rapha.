@@ -23,16 +23,18 @@ body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
   line-height: 1.6;
-  height: 100vh;
-  height: 100dvh;
-  overflow: hidden;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  overflow-y: auto;
   max-width: 100vw;
 }
 
 html {
-  height: 100vh;
-  height: 100dvh;
-  overflow: hidden;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  overflow-y: auto;
   max-width: 100vw;
 }
 
@@ -246,61 +248,120 @@ p {
   padding: 2rem;
 }
 
-/* ===== PRODUCT CAROUSEL ===== */
-.carousel-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
+/* ===== PROMOTIONAL POSTERS ===== */
+.promotional-posters {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 3rem;
   width: 100%;
-  margin-top: 2rem;
-  padding: 0 4rem;
 }
 
-.products-carousel {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  max-width: 900px;
-  min-height: 650px;
-}
-
-.carousel-nav-btn {
-  background: transparent;
-  border: none;
+.poster-card {
+  text-decoration: none;
   color: var(--text-primary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: opacity 0.3s ease;
+  min-width: 0;
+}
+
+.poster-card:hover {
+  opacity: 0.8;
+}
+
+.poster-card img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  background-color: #f6f6f6;
+  margin-bottom: 1.5rem;
+}
+
+.poster-card h3 {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+/* ===== NIKE LAYOUT ===== */
+.nike-layout {
+  display: flex;
+  gap: 2rem;
+  width: 100%;
+}
+
+/* ===== SIDEBAR FILTERS ===== */
+.sidebar-filters {
+  width: 250px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 120px;
+  height: calc(100vh - 140px);
+  overflow-y: auto;
+  padding-right: 1rem;
+}
+
+.sidebar-title {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.filter-group {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.filter-group-title {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
   cursor: pointer;
-  padding: 1rem;
-  opacity: 0.5;
-  transition: all 0.3s ease;
-  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+}
+
+.filter-list {
+  list-style: none;
+}
+
+.filter-list li {
+  margin-bottom: 0.5rem;
+}
+
+.filter-list label {
   display: flex;
   align-items: center;
-  justify-content: center;
-  position: absolute;
-  top: 275px;
-  /* Center of 550px image wrapper */
-  transform: translateY(-50%);
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: var(--text-primary);
 }
 
-.prev-btn {
-  left: 0;
+.filter-checkbox {
+  width: 1.2rem;
+  height: 1.2rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  cursor: pointer;
 }
 
-.next-btn {
-  right: 0;
+/* ===== PRODUCT GRID ===== */
+.product-grid-container {
+  flex: 1;
 }
 
-.carousel-nav-btn:hover {
-  opacity: 1;
-  transform: scale(1.1);
-}
-
-.carousel-nav-btn:disabled {
-  opacity: 0.2;
-  cursor: not-allowed;
-  transform: none;
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+  width: 100%;
 }
 
 /* ===== PRODUCT CARD ===== */
@@ -308,28 +369,24 @@ p {
   background-color: transparent;
   border: none;
   width: 100%;
-  max-width: 800px;
-  overflow: visible;
-  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.product-card:hover {
-  transform: translateY(-10px);
+  transition: opacity 0.3s ease;
+  display: flex;
+  flex-direction: column;
 }
 
 /* ===== IMAGE STYLES ===== */
 .image-wrapper {
   width: 100%;
-  height: 550px;
-  /* Made much taller for larger images */
-  background-color: transparent;
+  aspect-ratio: 1 / 1;
+  background-color: #f6f6f6; /* Nike light gray */
   border: none;
-  overflow: visible;
-  /* Let the shoe break boundaries if needed */
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
+  margin-bottom: 0.5rem;
+  padding: 1.5rem;
 }
 
 /* ===== CAROUSEL STYLES ===== */
@@ -374,8 +431,8 @@ p {
 .product-colors-thumbs {
   display: flex;
   gap: 0.5rem;
-  padding: 0.75rem 1rem 0;
-  justify-content: center;
+  padding: 0.5rem 0 0;
+  justify-content: flex-start;
 }
 
 .color-thumb {
@@ -408,33 +465,31 @@ p {
   object-fit: contain;
   display: block;
   transition: transform 0.4s ease, opacity 0.3s ease;
-  filter: drop-shadow(0 20px 20px rgba(0, 0, 0, 0.15));
-  /* Adds shadow to the PNG shape */
 }
 
-/* Ajustes específicos para igualar el tamaño entre la foto principal y la de hover/presentación */
+/* Specific adjustments if needed for new grid size */
 article[data-product-id="shoe-003"] .carousel-hover {
-  transform: scale(0.85);
-  /* Escala la segunda foto del Grand Court */
+  transform: scale(0.95);
 }
 
 article[data-product-id="shoe-004"] .carousel-hover {
-  transform: scale(0.85);
-  /* Escala la segunda foto del Garoe V2 */
+  transform: scale(0.95);
 }
 
-/* Aumentar el tamaño de la ropa deportiva globalmente */
-article[data-category="sportswear"] .product-image {
-  transform: scale(1.4);
+article[data-category="women"] .product-image,
+article[data-category="men"] .product-image {
+  transform: scale(1.1);
+}
+
+article[data-product-id="sup-005"] .product-image,
+article[data-product-id="sup-011"] .product-image {
+  transform: scale(0.85);
 }
 
 .image-placeholder {
   width: 100%;
-  content: '';
-  width: 120px;
-  height: 120px;
-  border: 2px solid var(--border-color);
-  border-radius: 8px;
+  aspect-ratio: 1 / 1;
+  background-color: #f6f6f6;
 }
 
 .image-placeholder::after {
@@ -449,15 +504,31 @@ article[data-category="sportswear"] .product-image {
 /* ===== PRODUCT INFO ===== */
 .product-info {
   padding: 0.5rem 0 0 0;
-  text-align: center;
+  text-align: left;
   background: transparent;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.product-is-new {
+  color: #c93a1d; /* Nike red/orange */
+  font-weight: 500;
+  font-size: 0.95rem;
+  margin-bottom: 0.25rem;
 }
 
 .product-name {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 0.15rem;
   color: var(--text-primary);
+}
+
+.product-category {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
 }
 
 .product-description {
@@ -465,13 +536,15 @@ article[data-category="sportswear"] .product-image {
   color: var(--text-secondary);
   margin-bottom: 1rem;
   line-height: 1.5;
+  display: none; /* Hide description in grid view to match Nike */
 }
 
 .product-price {
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-size: 1rem;
+  font-weight: 500;
   color: var(--text-primary);
-  margin-bottom: 1rem;
+  margin-top: auto;
+  margin-bottom: 0.5rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -485,6 +558,7 @@ article[data-category="sportswear"] .product-image {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   vertical-align: middle;
+  display: none; /* Hide badges to look cleaner like Nike */
 }
 
 .currency-badge.bcv {
@@ -560,6 +634,7 @@ article[data-category="sportswear"] .product-image {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+  margin-top: 1rem;
 }
 
 .add-to-cart-btn:hover {
